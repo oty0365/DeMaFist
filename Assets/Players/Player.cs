@@ -47,7 +47,7 @@ namespace Players
             }
         }
 
-        protected void CheckMoveMent()
+        protected void CheckMovement()
         {
             if (team == PlayerTeam.TeamA)
             {

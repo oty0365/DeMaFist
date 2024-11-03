@@ -15,7 +15,7 @@ public class Puppet : Player
 
     private void FixedUpdate()
     {
-        CheckMoveMent();
+        CheckMovement();
     }
 
     public override void DefaultSkill()
