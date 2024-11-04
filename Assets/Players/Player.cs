@@ -36,15 +36,21 @@ namespace Players
         [Header("플레이어 블록/패링 박스 순서데로 블록 ,패링")] public Collider2D[] blockBox = new Collider2D[2];
         [Header("점프하는 힘")] public float jumpForce;
         [Header("플레이어 상태")] public PlayerStatus playerStatus;
+        [Header("플레이어 발")] public GameObject foot;
+        [Header("해당 플레이어 최대 점프 횟수")] public int maxJump;
+        [Header("땅 설정")] public LayerMask ground;
         private float _currentUltimateGauge;
         private float _currentHp;
         private float _currentStunTime;
-
+        private int _isFacingRight; 
+        private int _currentJump;
         protected void SetUpPlayer()
         {
+            _currentHp = 0;
             _currentHp = maxHp;
             _currentStunTime = stunTime;
             _currentUltimateGauge = 0;
+            _isFacingRight = team == PlayerTeam.TeamA ? 1 : -1;
             playerStatus = PlayerStatus.Normal;
         }
         protected void CheckStatus()
@@ -54,7 +60,10 @@ namespace Players
 
         public void Stun(float force, float time)
         {
-            
+            if (playerStatus == PlayerStatus.Stun)
+            {
+                StopCoroutine(StunFlow(force, time));
+            }
             StartCoroutine(StunFlow(force, time));
         }
 
@@ -69,15 +78,16 @@ namespace Players
         {
             rb.velocity = new Vector2(0, 0);
             playerStatus = PlayerStatus.Stun;
-            rb.AddForce(rb.transform.right * (force*-1),ForceMode2D.Impulse);
+            rb.AddForce(rb.transform.right * (force*_isFacingRight),ForceMode2D.Impulse);
             yield return new WaitForSeconds(time);
             playerStatus = PlayerStatus.Normal;
         }
+        
         protected IEnumerator AirBoneFlow(float force, float time)
         {
             rb.velocity = new Vector2(0, 0);
             playerStatus = PlayerStatus.AirBone;
-            rb.AddForce(rb.transform.right * (force*-1),ForceMode2D.Impulse);
+            rb.AddForce(rb.transform.right * (force*_isFacingRight),ForceMode2D.Impulse);
             rb.AddForce(Vector2.up*force,ForceMode2D.Impulse);
             yield return new WaitForSeconds(time);
             playerStatus = PlayerStatus.Normal;
@@ -91,6 +101,18 @@ namespace Players
             else
             {
                 BSkillSet();
+            }
+        }
+
+        protected void CheckFloor()
+        {
+            if (Physics2D.OverlapCircle(foot.transform.position, 0.1f, ground))
+            {
+                _currentJump = 0;
+            }
+            else if (_currentJump == 0 && Physics2D.OverlapCircle(foot.transform.position, 0.1f, ground) == false)
+            {
+                _currentJump += 1;
             }
         }
 
@@ -113,12 +135,14 @@ namespace Players
             if (Input.GetKey(KeyCode.A))
             {
                 horizontal = -1;
+                _isFacingRight = -1;
             }
             else if (Input.GetKey(KeyCode.D))
             {
                 horizontal = 1;
+                _isFacingRight = 1;
             }
-
+            transform.localScale = new Vector3(_isFacingRight, transform.localScale.y);
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         }
 
@@ -142,9 +166,10 @@ namespace Players
                 {
                     BlockSkill();
                 }
-                if (Input.GetKeyDown(KeyCode.W))
+                if (Input.GetKeyDown(KeyCode.W)&&_currentJump<maxJump)
                 {
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
+                    _currentJump++;
                 }
             }
 
@@ -170,10 +195,10 @@ namespace Players
                 {
                     BlockSkill();
                 }
-
-                if (Input.GetKeyDown(KeyCode.U))
+                if (Input.GetKeyDown(KeyCode.U)&&_currentJump<maxJump)
                 {
-                    rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                    rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
+                    _currentJump++;
                 }
             }
         }
@@ -204,10 +229,12 @@ namespace Players
             if (Input.GetKey(KeyCode.H))
             {
                 horizontal = -1;
+                _isFacingRight *= -1;
             }
             else if (Input.GetKey(KeyCode.K))
             {
                 horizontal = 1;
+                _isFacingRight *= -1;
             }
 
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);

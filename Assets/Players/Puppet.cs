@@ -18,9 +18,9 @@ public class Puppet : Player
        
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            //Stun(2,2);
-            AirBone(4,2);
+            AirBone(3,2);
         }
+        CheckFloor();
         CheckSkill();
     }
 
