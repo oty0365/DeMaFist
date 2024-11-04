@@ -8,8 +8,19 @@ using Debug = UnityEngine.Debug;
 
 public class Puppet : Player
 {
+    private void Start()
+    {
+        SetUpPlayer();
+    }
+
     private void Update()
     {
+       
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //Stun(2,2);
+            AirBone(4,2);
+        }
         CheckSkill();
     }
 

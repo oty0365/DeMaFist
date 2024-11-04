@@ -235,7 +235,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &72372558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,6 +262,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   jumpForce: 5
+  playerStatus: 0
 --- !u!212 &72372559
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -323,7 +324,7 @@ Transform:
   m_GameObject: {fileID: 72372554}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.15, y: 0.016451003, z: 0}
+  m_LocalPosition: {x: 0.15, y: -1.33, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -453,7 +454,7 @@ Transform:
   m_GameObject: {fileID: 199050563}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0925, y: -3.81, z: 0}
+  m_LocalPosition: {x: -1.0925, y: -4.54, z: 0}
   m_LocalScale: {x: 26.220663, y: 3.8995, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -519,7 +520,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 1
+  orthographic: 0
   orthographic size: 5
   m_Depth: -1
   m_CullingMask:
