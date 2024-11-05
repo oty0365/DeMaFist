@@ -58,37 +58,63 @@ namespace Players
             
         }
 
-        public void Stun(float force, float time)
+        public void Stun(float force, float time,int forceMode)
         {
             if (playerStatus == PlayerStatus.Stun)
             {
-                StopCoroutine(StunFlow(force, time));
+                StopCoroutine(StunFlow(force, time ,forceMode));
             }
-            StartCoroutine(StunFlow(force, time));
+            StartCoroutine(StunFlow(force, time,forceMode));
         }
 
-        public void AirBone(float force, float time)
+        public void AirBone(float force, float time ,int forceMode)
         {
             if (playerStatus != PlayerStatus.AirBone)
             {
-                StartCoroutine(AirBoneFlow(force, time));
+                StartCoroutine(AirBoneFlow(force, time, forceMode));
             }
         }
-        protected IEnumerator StunFlow(float force, float time)
+        protected IEnumerator StunFlow(float force, float time,int forceMode)
         {
+            var dir = 0;
+            switch (forceMode)
+            {
+                case 0:
+                    dir = 0;
+                    break;
+                case 1:
+                    dir = 1;
+                    break;
+                case -1:
+                    dir = -1;
+                    break;
+            }
             rb.velocity = new Vector2(0, 0);
             playerStatus = PlayerStatus.Stun;
-            rb.AddForce(rb.transform.right * (force*_isFacingRight),ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(dir,0)* (force*_isFacingRight),ForceMode2D.Impulse);
             yield return new WaitForSeconds(time);
             playerStatus = PlayerStatus.Normal;
         }
         
-        protected IEnumerator AirBoneFlow(float force, float time)
+        protected IEnumerator AirBoneFlow(float force, float time,int forceMode)
         {
+            var dir = 0;
+            switch (forceMode)
+            {
+                case 0:
+                    dir = 0;
+                    break;
+                case 1:
+                    dir = 1;
+                    break;
+                case -1:
+                    dir = -1;
+                    break;
+            }
             rb.velocity = new Vector2(0, 0);
             playerStatus = PlayerStatus.AirBone;
-            rb.AddForce(rb.transform.right * (force*_isFacingRight),ForceMode2D.Impulse);
-            rb.AddForce(Vector2.up*force,ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(dir,0) * (force*_isFacingRight),ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up*(force*2),ForceMode2D.Impulse);
             yield return new WaitForSeconds(time);
             playerStatus = PlayerStatus.Normal;
         }
