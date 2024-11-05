@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - team1hp
+  - team2hp
+  - team1ul
+  - team2ul
   layers:
   - Default
   - TransparentFX

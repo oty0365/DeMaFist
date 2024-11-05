@@ -3,6 +3,14 @@ using UnityEngine;
 
 namespace Players
 {
+    public enum PlayerType
+    {
+        Ignite,
+        Mister286,
+        Justion,
+        Mister
+        
+    }
     public enum PlayerTeam
     {
         TeamA,
@@ -52,6 +60,7 @@ namespace Players
             _currentUltimateGauge = 0;
             _isFacingRight = team == PlayerTeam.TeamA ? 1 : -1;
             playerStatus = PlayerStatus.Normal;
+            
         }
         protected void CheckStatus()
         {
@@ -60,11 +69,11 @@ namespace Players
 
         public void Stun(float force, float time,int forceMode)
         {
-            if (playerStatus == PlayerStatus.Stun)
+            if (playerStatus != PlayerStatus.Stun)
             {
-                StopCoroutine(StunFlow(force, time ,forceMode));
+                StartCoroutine(StunFlow(force, time, forceMode));
             }
-            StartCoroutine(StunFlow(force, time,forceMode));
+           
         }
 
         public void AirBone(float force, float time ,int forceMode)
@@ -255,14 +264,14 @@ namespace Players
             if (Input.GetKey(KeyCode.H))
             {
                 horizontal = -1;
-                _isFacingRight *= -1;
+                _isFacingRight = -1;
             }
             else if (Input.GetKey(KeyCode.K))
             {
                 horizontal = 1;
-                _isFacingRight *= -1;
+                _isFacingRight = 1;
             }
-
+            transform.localScale = new Vector3(_isFacingRight, transform.localScale.y);
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         }
     }
