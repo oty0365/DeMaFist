@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Players
         Ignite,
         Mister286,
         Justion,
-        Mister
+        MasterMoon
         
     }
     public enum PlayerTeam
@@ -47,6 +48,8 @@ namespace Players
         [Header("플레이어 발")] public GameObject foot;
         [Header("해당 플레이어 최대 점프 횟수")] public int maxJump;
         [Header("땅 설정")] public LayerMask ground;
+        protected Action _moveMent;
+        protected Action _skillUse;
         private float _currentUltimateGauge;
         private float _currentHp;
         private float _currentStunTime;
@@ -60,6 +63,16 @@ namespace Players
             _currentUltimateGauge = 0;
             _isFacingRight = team == PlayerTeam.TeamA ? 1 : -1;
             playerStatus = PlayerStatus.Normal;
+            if (team == PlayerTeam.TeamA)
+            {
+                _moveMent = AMove;
+                _skillUse = ASkillSet;
+            }
+            else
+            {
+                _moveMent = BMove;
+                _skillUse = BSkillSet;
+            }
             
         }
         protected void CheckStatus()
@@ -129,14 +142,7 @@ namespace Players
         }
         protected void CheckSkill()
         {
-            if (team == PlayerTeam.TeamA)
-            {
-                ASkillSet();
-            }
-            else
-            {
-                BSkillSet();
-            }
+            _skillUse.Invoke();
         }
 
         protected void CheckFloor()
@@ -153,14 +159,7 @@ namespace Players
 
         protected void CheckMovement()
         {
-            if (team == PlayerTeam.TeamA)
-            {
-                AMove();
-            }
-            else
-            {
-                BMove();
-            }
+            _moveMent.Invoke();
         }
 
         protected void AMove()
