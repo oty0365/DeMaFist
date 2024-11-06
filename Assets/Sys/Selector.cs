@@ -1,12 +1,14 @@
 using Players;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sys
 {
     public class Selector : MonoBehaviour
     {
         public PlayerTeam team;
+        [SerializeField] private Image playerPortrait;
         [SerializeField] private ChampionsArray championsArray;
         public int currentIdx;
         public bool determined;
@@ -55,10 +57,9 @@ namespace Sys
                 currentIdx++;
             }
 
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                determined = true;
-            }
+            if (!Input.GetKeyDown(KeyCode.R)) return;
+            determined = true;
+            Selection();
         }
 
         private void BMovement()
@@ -82,10 +83,15 @@ namespace Sys
             {
                 currentIdx++;
             }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                determined = true;
-            }
+
+            if (!Input.GetKeyDown(KeyCode.O)) return;
+            determined = true;
+            Selection();
+        }
+
+        private void Selection()
+        {
+            playerPortrait.sprite=championsArray.championsArray[currentIdx].GetComponent<PlayerPostData>().portrait;
         }
         
     }
