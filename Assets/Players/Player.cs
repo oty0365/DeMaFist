@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Players
@@ -9,7 +11,8 @@ namespace Players
         Ignite,
         Mister286,
         Justion,
-        MasterMoon
+        MasterMoon,
+        BloodyDevil,
         
     }
     public enum PlayerTeam
@@ -45,7 +48,7 @@ namespace Players
         [Header("플레이어 블록/패링 박스 순서데로 블록 ,패링")] public Collider2D[] blockBox = new Collider2D[2];
         [Header("점프하는 힘")] public float jumpForce;
         [Header("플레이어 상태")] public PlayerStatus playerStatus;
-        [Header("플레이어 발")] public GameObject foot;
+        [Header("플레이어 발콜라이더")] public Collider2D foot;
         [Header("해당 플레이어 최대 점프 횟수")] public int maxJump;
         [Header("땅 설정")] public LayerMask ground;
         protected Action _moveMent;
@@ -55,6 +58,8 @@ namespace Players
         private float _currentStunTime;
         private int _isFacingRight; 
         private int _currentJump;
+        private static readonly int Behave = Animator.StringToHash("behave");
+
         protected void SetUpPlayer()
         {
             _currentHp = 0;
@@ -63,6 +68,7 @@ namespace Players
             _currentUltimateGauge = 0;
             _isFacingRight = team == PlayerTeam.TeamA ? 1 : -1;
             playerStatus = PlayerStatus.Normal;
+            ani.SetInteger(Behave,0);
             if (team == PlayerTeam.TeamA)
             {
                 _moveMent = AMove;
@@ -147,14 +153,32 @@ namespace Players
 
         protected void CheckFloor()
         {
-            if (Physics2D.OverlapCircle(foot.transform.position, 0.1f, ground))
+            Debug.Log(foot.transform.position);
+            if (Physics2D.OverlapCircle(foot.gameObject.transform.position, 0.1f, ground))
             {
                 _currentJump = 0;
+                
             }
-            else if (_currentJump == 0 && Physics2D.OverlapCircle(foot.transform.position, 0.1f, ground) == false)
+            else if (_currentJump == 0 && Physics2D.OverlapCircle(foot.gameObject.transform.position, 0.1f, ground) == false)
             {
                 _currentJump += 1;
             }
+            
+        }
+
+        protected void OnTriggerEnter2D(Collider2D other)
+        {
+            Debug.Log(other.name);
+            if (other == foot&&other.CompareTag("land"))
+            {
+                    ani.SetInteger(Behave,0);
+            }
+        }
+
+        protected void OnTriggerExit2D(Collider2D other)
+        {
+            if(other == foot&&other)
+                ani.SetInteger(Behave,2);
         }
 
         protected void CheckMovement()
@@ -202,6 +226,7 @@ namespace Players
                 }
                 if (Input.GetKeyDown(KeyCode.W)&&_currentJump<maxJump)
                 {
+                    ani.SetInteger(Behave,2);
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
                     _currentJump++;
                 }
@@ -231,6 +256,7 @@ namespace Players
                 }
                 if (Input.GetKeyDown(KeyCode.U)&&_currentJump<maxJump)
                 {
+                    ani.SetInteger(Behave,2);
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
                     _currentJump++;
                 }

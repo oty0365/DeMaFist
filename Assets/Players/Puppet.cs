@@ -1,48 +1,45 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Players;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
-public class Puppet : Player
+namespace Players
 {
-    private void Start()
+    public class Ignite : Player
     {
-        SetUpPlayer();
-    }
-
-    private void Update()
-    {
-       
-        if (Input.GetKeyDown(KeyCode.Space))
+        private void Start()
         {
-            Stun(3,0.5f,-1);
+            SetUpPlayer();
         }
-        CheckFloor();
-        CheckSkill();
-    }
 
-    private void FixedUpdate()
-    {
-        CheckMovement();
-    }
+        private void Update()
+        {
+       
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Stun(3,0.5f,-1);
+            }
+            CheckFloor();
+            CheckSkill();
+        }
 
-    public override void DefaultSkill()
-    {
-        Debug.Log("used puppet skill");
-    }
-    public override void AbilitySkill()
-    {
-        Debug.Log("used puppet skill");
-    }
-    public override void UltimateSkill()
-    {
-        Debug.Log("used puppet skill");
-    }
-    public override void BlockSkill()
-    {
-        Debug.Log("used puppet skill");
+        private void FixedUpdate()
+        {
+            CheckMovement();
+        }
+
+        public override void DefaultSkill()
+        {
+            Debug.Log("used puppet skill");
+        }
+        public override void AbilitySkill()
+        {
+            Debug.Log("used puppet skill");
+        }
+        public override void UltimateSkill()
+        {
+            Debug.Log("used puppet skill");
+        }
+        public override void BlockSkill()
+        {
+            Debug.Log("used puppet skill");
+        }
     }
 }
