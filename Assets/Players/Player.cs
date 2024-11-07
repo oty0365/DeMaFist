@@ -48,9 +48,9 @@ namespace Players
         [Header("플레이어 블록/패링 박스 순서데로 블록 ,패링")] public Collider2D[] blockBox = new Collider2D[2];
         [Header("점프하는 힘")] public float jumpForce;
         [Header("플레이어 상태")] public PlayerStatus playerStatus;
-        [Header("플레이어 발콜라이더")] public Collider2D foot;
         [Header("해당 플레이어 최대 점프 횟수")] public int maxJump;
         [Header("땅 설정")] public LayerMask ground;
+        [Header("플레이어 발콜라이더")] public Collider2D footCollider;
         protected Action _moveMent;
         protected Action _skillUse;
         private float _currentUltimateGauge;
@@ -153,32 +153,16 @@ namespace Players
 
         protected void CheckFloor()
         {
-            Debug.Log(foot.transform.position);
-            if (Physics2D.OverlapCircle(foot.gameObject.transform.position, 0.1f, ground))
+            if (Physics2D.OverlapCircle(footCollider.gameObject.transform.position, 0.1f, ground))
             {
                 _currentJump = 0;
                 
             }
-            else if (_currentJump == 0 && Physics2D.OverlapCircle(foot.gameObject.transform.position, 0.1f, ground) == false)
+            else if (_currentJump == 0 && Physics2D.OverlapCircle(footCollider.gameObject.transform.position, 0.1f, ground) == false)
             {
                 _currentJump += 1;
             }
             
-        }
-
-        protected void OnTriggerEnter2D(Collider2D other)
-        {
-            Debug.Log(other.name);
-            if (other == foot&&other.CompareTag("land"))
-            {
-                    ani.SetInteger(Behave,0);
-            }
-        }
-
-        protected void OnTriggerExit2D(Collider2D other)
-        {
-            if(other == foot&&other)
-                ani.SetInteger(Behave,2);
         }
 
         protected void CheckMovement()
