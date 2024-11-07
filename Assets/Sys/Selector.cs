@@ -1,36 +1,46 @@
+using System;
 using Players;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Sys
 {
     public class Selector : MonoBehaviour
     {
         public PlayerTeam team;
+        [SerializeField] private Image playerPortrait;
         [SerializeField] private ChampionsArray championsArray;
         public int currentIdx;
         public bool determined;
+        private Action _movement;
+        public static PlayerType teamAPick;
+        public static PlayerType teamBPick;
+        public static int gameStartCount;
         private void Start()
         {
+            gameStartCount = 0;
             currentIdx = 0;
             determined = false;
+            if (team == PlayerTeam.TeamA)
+            {
+                _movement = AMovement;
+            }
+            else
+            {
+                _movement = BMovement;
+            }
         }
         
         private void Update()
         {
             CheckPlayer();
+            Debug.Log(teamAPick+teamBPick.ToString());
         }
 
         private void CheckPlayer()
         {
-            if (team == PlayerTeam.TeamA)
-            {
-                AMovement();
-            }
-            else
-            {
-                BMovement();
-            }
+            _movement.Invoke();
         }
 
         private void AMovement()
@@ -55,10 +65,9 @@ namespace Sys
                 currentIdx++;
             }
 
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                determined = true;
-            }
+            if (!Input.GetKeyDown(KeyCode.R)) return;
+            determined = true;
+            ASelection();
         }
 
         private void BMovement()
@@ -82,10 +91,24 @@ namespace Sys
             {
                 currentIdx++;
             }
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                determined = true;
-            }
+
+            if (!Input.GetKeyDown(KeyCode.O)) return;
+            determined = true;
+            BSelection();
+        }
+
+        private void ASelection()
+        {
+            playerPortrait.sprite=championsArray.championsArray[currentIdx].GetComponent<PlayerPostData>().portrait;
+            teamAPick = championsArray.championsArray[currentIdx].GetComponent<PlayerPostData>().ChampionType;
+            gameStartCount++;
+        }
+
+        private void BSelection()
+        {
+            playerPortrait.sprite=championsArray.championsArray[currentIdx].GetComponent<PlayerPostData>().portrait;
+            teamBPick = championsArray.championsArray[currentIdx].GetComponent<PlayerPostData>().ChampionType;
+            gameStartCount++;
         }
         
     }

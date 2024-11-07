@@ -8,6 +8,7 @@ TagManager:
   - team2hp
   - team1ul
   - team2ul
+  - land
   layers:
   - Default
   - TransparentFX

@@ -1,4 +1,7 @@
+using System;
 using System.Collections;
+using System.ComponentModel;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Players
@@ -8,7 +11,8 @@ namespace Players
         Ignite,
         Mister286,
         Justion,
-        Mister
+        MasterMoon,
+        BloodyDevil,
         
     }
     public enum PlayerTeam
@@ -44,14 +48,18 @@ namespace Players
         [Header("플레이어 블록/패링 박스 순서데로 블록 ,패링")] public Collider2D[] blockBox = new Collider2D[2];
         [Header("점프하는 힘")] public float jumpForce;
         [Header("플레이어 상태")] public PlayerStatus playerStatus;
-        [Header("플레이어 발")] public GameObject foot;
         [Header("해당 플레이어 최대 점프 횟수")] public int maxJump;
         [Header("땅 설정")] public LayerMask ground;
+        [Header("플레이어 발콜라이더")] public Collider2D footCollider;
+        protected Action _moveMent;
+        protected Action _skillUse;
         private float _currentUltimateGauge;
         private float _currentHp;
         private float _currentStunTime;
         private int _isFacingRight; 
         private int _currentJump;
+        private static readonly int Behave = Animator.StringToHash("behave");
+
         protected void SetUpPlayer()
         {
             _currentHp = 0;
@@ -60,6 +68,17 @@ namespace Players
             _currentUltimateGauge = 0;
             _isFacingRight = team == PlayerTeam.TeamA ? 1 : -1;
             playerStatus = PlayerStatus.Normal;
+            ani.SetInteger(Behave,0);
+            if (team == PlayerTeam.TeamA)
+            {
+                _moveMent = AMove;
+                _skillUse = ASkillSet;
+            }
+            else
+            {
+                _moveMent = BMove;
+                _skillUse = BSkillSet;
+            }
             
         }
         protected void CheckStatus()
@@ -129,38 +148,26 @@ namespace Players
         }
         protected void CheckSkill()
         {
-            if (team == PlayerTeam.TeamA)
-            {
-                ASkillSet();
-            }
-            else
-            {
-                BSkillSet();
-            }
+            _skillUse.Invoke();
         }
 
         protected void CheckFloor()
         {
-            if (Physics2D.OverlapCircle(foot.transform.position, 0.1f, ground))
+            if (Physics2D.OverlapCircle(footCollider.gameObject.transform.position, 0.1f, ground))
             {
                 _currentJump = 0;
+                
             }
-            else if (_currentJump == 0 && Physics2D.OverlapCircle(foot.transform.position, 0.1f, ground) == false)
+            else if (_currentJump == 0 && Physics2D.OverlapCircle(footCollider.gameObject.transform.position, 0.1f, ground) == false)
             {
                 _currentJump += 1;
             }
+            
         }
 
         protected void CheckMovement()
         {
-            if (team == PlayerTeam.TeamA)
-            {
-                AMove();
-            }
-            else
-            {
-                BMove();
-            }
+            _moveMent.Invoke();
         }
 
         protected void AMove()
@@ -203,6 +210,7 @@ namespace Players
                 }
                 if (Input.GetKeyDown(KeyCode.W)&&_currentJump<maxJump)
                 {
+                    ani.SetInteger(Behave,2);
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
                     _currentJump++;
                 }
@@ -232,6 +240,7 @@ namespace Players
                 }
                 if (Input.GetKeyDown(KeyCode.U)&&_currentJump<maxJump)
                 {
+                    ani.SetInteger(Behave,2);
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
                     _currentJump++;
                 }
