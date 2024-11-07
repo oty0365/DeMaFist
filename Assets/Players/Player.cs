@@ -184,6 +184,8 @@ namespace Players
                 horizontal = 1;
                 _isFacingRight = 1;
             }
+            
+            
             transform.localScale = new Vector3(_isFacingRight, transform.localScale.y);
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         }
@@ -213,6 +215,14 @@ namespace Players
                     ani.SetInteger(Behave,2);
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
                     _currentJump++;
+                }
+                if (Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.D))
+                {
+                    ani.SetInteger(Behave,1);
+                }
+                if (Input.GetKeyUp(KeyCode.A)||Input.GetKeyUp(KeyCode.D))
+                {
+                    ani.SetInteger(Behave,0);
                 }
             }
 
@@ -274,11 +284,13 @@ namespace Players
             {
                 horizontal = -1;
                 _isFacingRight = -1;
+                ani.SetInteger(Behave,1);
             }
             else if (Input.GetKey(KeyCode.K))
             {
                 horizontal = 1;
                 _isFacingRight = 1;
+                ani.SetInteger(Behave,1);
             }
             transform.localScale = new Vector3(_isFacingRight, transform.localScale.y);
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
