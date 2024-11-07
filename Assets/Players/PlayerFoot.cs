@@ -12,9 +12,14 @@ namespace Players
         {
             player.ani.SetInteger("behave",0);
         }
-
+        private void OnTriggerStay2D(Collider2D other)
+        {
+            player.ani.SetInteger("behave",0);
+        }
+        
         private void OnTriggerExit(Collider other)
         {
+            Debug.Log("!");
             player.ani.SetInteger("bahave",2);
         }
     }
