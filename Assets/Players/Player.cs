@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ namespace Players
         AirBone,
         Dead
     }
+    
+    
     public class Player : MonoBehaviour
     {
         [Header("플레이어 팀")] public PlayerTeam team;
@@ -52,6 +55,7 @@ namespace Players
         [Header("땅 설정")] public LayerMask ground;
         [Header("플레이어 발콜라이더")] public Collider2D footCollider;
         protected Action _moveMent;
+        public bool _isAttacking;
         protected Action _skillUse;
         private float _currentUltimateGauge;
         private float _currentHp;
@@ -59,9 +63,11 @@ namespace Players
         private int _isFacingRight; 
         private int _currentJump;
         private static readonly int Behave = Animator.StringToHash("behave");
+        private static readonly int Attack1 = Animator.StringToHash("attack1");
 
         protected void SetUpPlayer()
         {
+            _isAttacking = false;
             _currentHp = 0;
             _currentHp = maxHp;
             _currentStunTime = stunTime;
@@ -172,17 +178,32 @@ namespace Players
 
         protected void AMove()
         {
+            Debug.Log(ani.GetInteger(Behave));
             if (playerStatus != PlayerStatus.Normal) return;
             var horizontal = 0;
             if (Input.GetKey(KeyCode.A))
             {
                 horizontal = -1;
                 _isFacingRight = -1;
+                if (Mathf.Abs(rb.velocity.y) <= 0.001&&!_isAttacking)
+                {
+                    ani.SetInteger(Behave,1);
+                }
             }
             else if (Input.GetKey(KeyCode.D))
             {
                 horizontal = 1;
                 _isFacingRight = 1;
+                if (Mathf.Abs(rb.velocity.y) <= 0.001&&!_isAttacking)
+                {
+                    ani.SetInteger(Behave,1);
+                }
+
+            }
+
+            if (Mathf.Abs(rb.velocity.x) <= 0.001 && Mathf.Abs(rb.velocity.y) <= 0.001&&!_isAttacking)
+            {
+                ani.SetInteger(Behave,0);
             }
             
             
@@ -192,7 +213,7 @@ namespace Players
 
         protected void ASkillSet()
         {
-            if (playerStatus == PlayerStatus.Normal)
+            if (playerStatus == PlayerStatus.Normal&&!_isAttacking)
             {
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
@@ -215,14 +236,6 @@ namespace Players
                     ani.SetInteger(Behave,2);
                     rb.AddForce(Vector2.up*jumpForce,ForceMode2D.Impulse);
                     _currentJump++;
-                }
-                if (Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.D))
-                {
-                    ani.SetInteger(Behave,1);
-                }
-                if (Input.GetKeyUp(KeyCode.A)||Input.GetKeyUp(KeyCode.D))
-                {
-                    ani.SetInteger(Behave,0);
                 }
             }
 
@@ -260,6 +273,7 @@ namespace Players
         public virtual void DefaultSkill()
         {
             Debug.Log(team+"used defaultskill");
+            
         }
 
         public virtual void AbilitySkill()
@@ -295,5 +309,11 @@ namespace Players
             transform.localScale = new Vector3(_isFacingRight, transform.localScale.y);
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         }
+        protected void GoToIdle()
+        {
+            ani.SetInteger(Behave,0);
+            _isAttacking = false;
+        }
     }
+
 }

@@ -28,6 +28,9 @@ namespace Players
         public override void DefaultSkill()
         {
             Debug.Log("used puppet skill");
+            ani.SetTrigger("attack1");
+            ani.SetInteger("behave",4);
+            _isAttacking = true;
         }
         public override void AbilitySkill()
         {

@@ -11,15 +11,16 @@ namespace Players
         private void OnTriggerEnter2D(Collider2D other)
         {
             player.ani.SetInteger("behave",0);
+            player._isAttacking = false;
+            //Debug.Log("!");
         }
-        private void OnTriggerStay2D(Collider2D other)
+        /*private void OnTriggerStay2D(Collider2D other)
         {
             player.ani.SetInteger("behave",0);
-        }
+        }*/
         
         private void OnTriggerExit(Collider other)
         {
-            Debug.Log("!");
             player.ani.SetInteger("bahave",2);
         }
     }
