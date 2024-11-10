@@ -39,6 +39,9 @@ namespace Players
         public override void UltimateSkill()
         {
             Debug.Log("used puppet skill");
+            ani.SetTrigger("ultimate");
+            ani.SetInteger("behave",7);
+            _isAttacking = true;
         }
         public override void BlockSkill()
         {

@@ -63,7 +63,6 @@ namespace Players
         private int _isFacingRight; 
         private int _currentJump;
         private static readonly int Behave = Animator.StringToHash("behave");
-        private static readonly int Attack1 = Animator.StringToHash("attack1");
 
         protected void SetUpPlayer()
         {
@@ -306,7 +305,7 @@ namespace Players
                 _isFacingRight = 1;
                 ani.SetInteger(Behave,1);
             }
-            transform.localScale = new Vector3(_isFacingRight, transform.localScale.y);
+            transform.localScale = new Vector3(_isFacingRight*transform.localScale.x, transform.localScale.y);
             rb.velocity = new Vector2(horizontal * moveSpeed, rb.velocity.y);
         }
         protected void GoToIdle()
